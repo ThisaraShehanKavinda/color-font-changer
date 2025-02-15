@@ -8,10 +8,10 @@ function App() {
   const [originalBgColor, setOriginalBgColor] = useState(null);
   const [originalFont, setOriginalFont] = useState(null);
 
-  const buttonRef = useRef(null); // To keep track of the button and its style
-  const colorPickerRef = useRef(null); // Reference to the color picker input
+  const buttonRef = useRef(null); 
+  const colorPickerRef = useRef(null); 
 
-  // Function to apply changes to the active tab
+  
   const applyChanges = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
@@ -24,13 +24,13 @@ function App() {
     });
   };
 
-  // Function to change style on the webpage
+  
   function changeStyle(color, font) {
     document.body.style.backgroundColor = color;
     document.body.style.fontFamily = font;
   }
 
-  // Function to reset the styles to the original ones
+  
   const resetSettings = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
@@ -43,16 +43,16 @@ function App() {
     });
   };
 
-  // Function to reset to original styles
+  
   function resetStyle(originalBg, originalFont) {
-    // Reset the styles of the webpage to the original background and font
+ 
     document.body.style.backgroundColor = originalBg;
     document.body.style.fontFamily = originalFont;
   }
 
-  // Function to capture the initial background color and font of the page
+ 
   useEffect(() => {
-    // Get the original background color and font from the current active tab
+    
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
         const originalBg = window.getComputedStyle(document.body).backgroundColor;
@@ -63,22 +63,22 @@ function App() {
     });
   }, []);
 
-  // Inline styles for the popup
+  
   const popupContainerStyle = {
     width: "280px",
-    background: "rgba(255, 255, 255, 0.1)", // Glassmorphism effect
+    background: "rgba(255, 255, 255, 0.1)", 
     backdropFilter: "blur(10px)",
     borderRadius: "12px",
     padding: "20px",
     textAlign: "center",
     boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",
-    color: "#000000", // Text color
+    color: "#000000", 
   };
 
   const headerStyle = {
     fontSize: "22px",
     marginBottom: "20px",
-    color: "#ff0088", // Neon pink for the header
+    color: "#ff0088", 
     textShadow: "0 0 10px #ff00ff, 0 0 20px #ff00ff",
   };
 
@@ -86,8 +86,8 @@ function App() {
     fontSize: "14px",
     margin: "10px 0 5px",
     fontWeight: "500",
-    color: "#000000", // Black color for labels
-    textShadow: "0 0 5px #ffffff", // To make the text stand out on a blurred background
+    color: "#000000", 
+    textShadow: "0 0 5px #ffffff", 
   };
 
   const colorBoxStyle = {
@@ -96,7 +96,7 @@ function App() {
     borderRadius: "8px",
     border: "2px solid #fff",
     cursor: "pointer",
-    backgroundColor: bgColor, // Color picker background
+    backgroundColor: bgColor, 
     transition: "background-color 0.3s ease",
   };
 
@@ -106,15 +106,15 @@ function App() {
     marginBottom: "20px",
     border: "2px solid rgba(255, 255, 255, 0.5)",
     borderRadius: "8px",
-    background: "rgba(255, 255, 255, 0.3)", // Darker background for better contrast
-    color: "#000", // Black color for the font selector text
+    background: "rgba(255, 255, 255, 0.3)", 
+    color: "#000", 
     fontSize: "16px",
     outline: "none",
     transition: "all 0.3s ease",
   };
 
   const buttonStyle = {
-    background: "#ff0088", // Neon pink
+    background: "#ff0088", 
     color: "#fff",
     padding: "12px",
     borderRadius: "8px",
@@ -130,30 +130,30 @@ function App() {
   };
 
   const buttonHoverStyle = {
-    background: "#ff1a8c", // Hover effect
+    background: "#ff1a8c", 
     boxShadow: "0 0 20px rgba(255, 0, 136, 0.8)",
   };
 
   const buttonActiveStyle = {
-    background: "#ff0055", // Active button effect
+    background: "#ff0055", 
     boxShadow: "0 0 30px rgba(255, 0, 136, 1)",
   };
 
   const [isButtonHovered, setButtonHovered] = useState(false);
   const [isButtonActive, setButtonActive] = useState(false);
 
-  // This is where the button style change happens, without overriding
+  
   useEffect(() => {
     if (buttonRef.current) {
       const button = buttonRef.current;
-      // Set hover styles
+      
       if (isButtonHovered) {
         Object.assign(button.style, buttonHoverStyle);
       } else {
         Object.assign(button.style, buttonStyle);
       }
 
-      // Set active styles
+      
       if (isButtonActive) {
         Object.assign(button.style, buttonActiveStyle);
       } else if (!isButtonHovered) {
@@ -173,16 +173,16 @@ function App() {
       <label style={labelStyle}>Background Color:</label>
       <div
         style={colorBoxStyle}
-        onClick={() => colorPickerRef.current.click()} // Open native color picker on box click
+        onClick={() => colorPickerRef.current.click()} 
       >
-        {/* Displaying the current color */}
+      
       </div>
       <input
         ref={colorPickerRef}
         type="color"
         value={bgColor}
         onChange={handleColorChange}
-        style={{ display: "none" }} // Hide the input
+        style={{ display: "none" }} 
       />
 
       <label style={labelStyle}>Font:</label>
@@ -213,9 +213,9 @@ function App() {
         onClick={resetSettings}
         style={{
           ...buttonStyle,
-          marginTop: "10px", // Space between buttons
-          background: "#444", // Dark background for the reset button
-          boxShadow: "0 0 10px rgba(68, 68, 68, 0.7)", // Soft shadow
+          marginTop: "10px", 
+          background: "#444", 
+          boxShadow: "0 0 10px rgba(68, 68, 68, 0.7)", 
         }}
         onMouseOver={() => setButtonHovered(true)}
         onMouseOut={() => setButtonHovered(false)}
