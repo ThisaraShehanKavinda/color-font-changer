@@ -5,9 +5,13 @@ function App() {
   const [bgColor, setBgColor] = useState("#856767FF");
   const [font, setFont] = useState("Arial");
 
+  const [originalBgColor, setOriginalBgColor] = useState(null);
+  const [originalFont, setOriginalFont] = useState(null);
+
   const buttonRef = useRef(null); // To keep track of the button and its style
   const colorPickerRef = useRef(null); // Reference to the color picker input
 
+  // Function to apply changes to the active tab
   const applyChanges = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
@@ -20,10 +24,44 @@ function App() {
     });
   };
 
+  // Function to change style on the webpage
   function changeStyle(color, font) {
     document.body.style.backgroundColor = color;
     document.body.style.fontFamily = font;
   }
+
+  // Function to reset the styles to the original ones
+  const resetSettings = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length > 0) {
+        chrome.scripting.executeScript({
+          target: { tabId: tabs[0].id },
+          func: resetStyle,
+          args: [originalBgColor, originalFont],
+        });
+      }
+    });
+  };
+
+  // Function to reset to original styles
+  function resetStyle(originalBg, originalFont) {
+    // Reset the styles of the webpage to the original background and font
+    document.body.style.backgroundColor = originalBg;
+    document.body.style.fontFamily = originalFont;
+  }
+
+  // Function to capture the initial background color and font of the page
+  useEffect(() => {
+    // Get the original background color and font from the current active tab
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length > 0) {
+        const originalBg = window.getComputedStyle(document.body).backgroundColor;
+        const originalFont = window.getComputedStyle(document.body).fontFamily;
+        setOriginalBgColor(originalBg);
+        setOriginalFont(originalFont);
+      }
+    });
+  }, []);
 
   // Inline styles for the popup
   const popupContainerStyle = {
@@ -169,6 +207,22 @@ function App() {
         onMouseUp={() => setButtonActive(false)}
       >
         Apply
+      </button>
+
+      <button
+        onClick={resetSettings}
+        style={{
+          ...buttonStyle,
+          marginTop: "10px", // Space between buttons
+          background: "#444", // Dark background for the reset button
+          boxShadow: "0 0 10px rgba(68, 68, 68, 0.7)", // Soft shadow
+        }}
+        onMouseOver={() => setButtonHovered(true)}
+        onMouseOut={() => setButtonHovered(false)}
+        onMouseDown={() => setButtonActive(true)}
+        onMouseUp={() => setButtonActive(false)}
+      >
+        Reset to Original
       </button>
     </div>
   );
